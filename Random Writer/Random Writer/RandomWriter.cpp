@@ -9,9 +9,49 @@
 
 #include <iostream>
 #include "console.h"
-using namespace std;
+#include <string>
+#include <fstream>
+
+std::string promptForFile(std::ifstream & infile, std::string prompt);
+void processRandomWriter(std::ifstream & infile);
 
 int main() {
-    // [TODO: fill with your code]
+	std::ifstream file;
+	promptForFile(file, "Enter the source text: ");
+	processRandomWriter(file);
+
+
     return 0;
+}
+
+
+std::string promptForFile(std::ifstream & infile, std::string prompt){
+	while (true){
+		std::cout << prompt;
+		std::string filename;
+		std::getline(std::cin,filename);
+		infile.open(filename.c_str());
+		if (!infile.fail())
+			return filename;
+		infile.clear();
+		std::cout << "Unable to open file. Try again." << std::endl;
+		if (prompt == "")
+			prompt = "input file:";
+
+	}
+
+}
+
+void processRandomWriter(std::ifstream & infile){
+
+	char ch;
+	while(infile.get(ch))//read file one char at a time until eof is reached.
+	{
+		std::cout<<ch<<std::endl;
+	}
+	//std::fstream fin("file", fstream::in);
+//	while (fin >> noskipws >> ch) {
+//		cout << ch; // Or whatever
+//	}
+	
 }
