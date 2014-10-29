@@ -16,6 +16,7 @@
 #include "simpio.h"
 #include <vector>
 #include <algorithm>
+#include <ctime>
 //using namespace std;
 
 /* Constants */
@@ -47,12 +48,11 @@ void shuffleCubes();
 /* Main program */
 
 int main() {
-    //srand(std::time(0));
+    srand(std::time(NULL));
     GWindow gw(BOGGLE_WINDOW_WIDTH, BOGGLE_WINDOW_HEIGHT);
     initGBoggle(gw);
-    shuffleCubes();
 	drawBoard(4,4);
-	labelCube(0,0,'D');
+    shuffleCubes();
     welcome();
     giveInstructions();
 
@@ -117,6 +117,14 @@ void shuffleCubes(){
 		std::iter_swap(cubesVec.begin()+i,cubesVec.begin()+r);
        
     }
+int k=0;
+	for(int i=0;i<4;i++){
+		for(int j=0;j<4;j++){
+			std::string str = cubesVec[k];
+			labelCube(i,j,str[rand()%6]);
+			k++;
+		}
+	}
 
 }
 // [TODO: Fill in the rest of the code]
