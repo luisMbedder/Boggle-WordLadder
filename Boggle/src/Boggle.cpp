@@ -17,12 +17,14 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+
 //using namespace std;
 
 /* Constants */
 
 const int BOGGLE_WINDOW_WIDTH = 650;
 const int BOGGLE_WINDOW_HEIGHT = 350;
+const int MINIMUM_WORD_LENGTH = 4;
 
 const string STANDARD_CUBES[16]  = {
     "AAEEGN", "ABBJOO", "ACHOPS", "AFFKPS",
@@ -43,18 +45,17 @@ const string BIG_BOGGLE_CUBES[25]  = {
 
 void welcome();
 void giveInstructions();
-void shuffleCubes();
+void shuffleCubes(void);
+void setupBoggle(void);
+int playBoggle(void);
+int humansTurn(void);
 
 /* Main program */
 
 int main() {
-    srand(std::time(NULL));
-    GWindow gw(BOGGLE_WINDOW_WIDTH, BOGGLE_WINDOW_HEIGHT);
-    initGBoggle(gw);
-	drawBoard(4,4);
-    shuffleCubes();
-    welcome();
-    giveInstructions();
+
+	setupBoggle();
+	playBoggle();
 
     return 0;
 }
@@ -107,12 +108,59 @@ void giveInstructions() {
 }
 
 
+void setupBoggle(){
+	srand(std::time(NULL));
+    GWindow gw(BOGGLE_WINDOW_WIDTH, BOGGLE_WINDOW_HEIGHT);
+    initGBoggle(gw);
+	drawBoard(4,4);
+    shuffleCubes();
+    welcome();
+    giveInstructions();
+}
+
+
+int playBoggle(){
+
+	return humansTurn();
+
+}
+
+
+int humansTurn(void){
+	Lexicon englishWords("EnglishWords.dat");
+	std::string userWord;
+	while(1){
+	std::cout << "Enter a Word: ";
+		if(!std::getline(std::cin,userWord)){
+		return -1; /* i/o error! */
+	}
+	if(userWord.empty()){
+		std::cout << "Would you like to play again?";
+		if(!std::getline(std::cin,userWord))
+			return -1;// i/o error
+		if(userWord=="n")
+			return 0;
+	}
+	if(userWord.length()<MINIMUM_WORD_LENGTH){
+		std::cout <<"That word doesn't meet the minimum word length."<<std::endl;
+	}
+	else if(!(englishWords.contains(userWord))){
+		std::cout <<"That's not a word!"<<std::endl;
+	}
+	else{//userWord is > minimum length and is a valid word
+		
+	}
+
+	}
+}
+
 void shuffleCubes(){
+	Grid<char> board(4, 4);
     std::vector<std::string> cubesVec;
     unsigned arraySize =sizeof(STANDARD_CUBES)/sizeof(STANDARD_CUBES[0]);
     copy(&STANDARD_CUBES[0],&STANDARD_CUBES[arraySize],back_inserter(cubesVec));
 
-    for(int i=0;i<cubesVec.size();i++){
+    for(unsigned int i=0;i<cubesVec.size();i++){
         int r=rand()%(arraySize-i)+i;//generate a random int between arraySize and i, inclusive
 		std::iter_swap(cubesVec.begin()+i,cubesVec.begin()+r);
        
@@ -120,8 +168,10 @@ void shuffleCubes(){
 int k=0;
 	for(int i=0;i<4;i++){
 		for(int j=0;j<4;j++){
-			std::string str = cubesVec[k];
-			labelCube(i,j,str[rand()%6]);
+			std::string lettersOnCube = cubesVec[k];
+			char letter = lettersOnCube[rand()%6];//choose a random side of dice to put "face up"
+			board[i][j]=letter;
+			labelCube(i,j,letter);
 			k++;
 		}
 	}
