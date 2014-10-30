@@ -17,6 +17,7 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+#include <set>
 
 //using namespace std;
 
@@ -49,11 +50,16 @@ void shuffleCubes(void);
 void setupBoggle(void);
 int playBoggle(void);
 int humansTurn(void);
+bool checkLength(std::string str);
+bool checkWordUsed(std::string,std::set<std::string>& usedWords);
+bool isEnglishWord(std::string word);
+void checkIfValidGuess(void);
 
+	Lexicon englishWords("EnglishWords.dat");
 /* Main program */
 
 int main() {
-
+	
 	setupBoggle();
 	playBoggle();
 
@@ -127,8 +133,9 @@ int playBoggle(){
 
 
 int humansTurn(void){
-	Lexicon englishWords("EnglishWords.dat");
 	std::string userWord;
+	std::vector<std::string> humanWordList;
+	std::set<std::string> usedWords;
 	while(1){
 	std::cout << "Enter a Word: ";
 		if(!std::getline(std::cin,userWord)){
@@ -141,14 +148,8 @@ int humansTurn(void){
 		if(userWord=="n")
 			return 0;
 	}
-	if(userWord.length()<MINIMUM_WORD_LENGTH){
-		std::cout <<"That word doesn't meet the minimum word length."<<std::endl;
-	}
-	else if(!(englishWords.contains(userWord))){
-		std::cout <<"That's not a word!"<<std::endl;
-	}
-	else{//userWord is > minimum length and is a valid word
-		
+	if(checkLength(userWord)&&checkWordUsed(userWord,usedWords)&&isEnglishWord(userWord)){
+		checkIfValidGuess();
 	}
 
 	}
@@ -175,6 +176,42 @@ int k=0;
 			k++;
 		}
 	}
+
+}
+
+bool checkLength(std::string str){
+	if(str.length()<MINIMUM_WORD_LENGTH){
+		std::cout <<"That word doesn't meet the minimum word length."<<std::endl;
+		return false;
+	}
+		return true;
+
+		
+}
+bool checkWordUsed(std::string str,std::set<std::string>& usedWords){
+
+	if(std::find(usedWords.begin(),usedWords.end(),str)!=usedWords.end()){
+		std::cout<<	"You've already found that word!"<<std::endl;
+		return false;
+	}
+		return true;
+
+
+}
+
+bool isEnglishWord(std::string word){		
+
+	if(!englishWords.contains(word)){
+		std::cout <<"That's not a word!"<<std::endl;
+		return false;
+	}
+		return true;
+
+}
+
+void checkIfValidGuess(void){
+
+	//	recordWordForPlayer(std::string word, Player player);
 
 }
 // [TODO: Fill in the rest of the code]
