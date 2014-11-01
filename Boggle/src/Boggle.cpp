@@ -10,6 +10,7 @@
 #include <iostream>
 #include "gboggle.h"
 #include "grid.h"
+#include "GridPoint.h"
 #include "gwindow.h"
 #include "lexicon.h"
 #include "random.h"
@@ -18,6 +19,7 @@
 #include <algorithm>
 #include <ctime>
 #include <set>
+#include <boost/algorithm/string.hpp>
 
 //using namespace std;
 
@@ -26,6 +28,7 @@
 const int BOGGLE_WINDOW_WIDTH = 650;
 const int BOGGLE_WINDOW_HEIGHT = 350;
 const int MINIMUM_WORD_LENGTH = 4;
+const int BOARD_SIZE =4;
 
 const string STANDARD_CUBES[16]  = {
     "AAEEGN", "ABBJOO", "ACHOPS", "AFFKPS",
@@ -46,21 +49,22 @@ const string BIG_BOGGLE_CUBES[25]  = {
 
 void welcome();
 void giveInstructions();
-void shuffleCubes(void);
+void shuffleCubes(Grid<char> & board,std::vector<std::string> &cubes);
 void setupBoggle(void);
-int playBoggle(void);
-int humansTurn(void);
+void playBoggle(void);
+void humansTurn(Grid<char> board);
 bool checkLength(std::string str);
 bool checkWordUsed(std::string,std::set<std::string>& usedWords);
 bool isEnglishWord(std::string word);
-void checkIfValidGuess(void);
+bool checkIfValidGuess(string playerWord,Grid<char>&board);
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
 
 	Lexicon englishWords("EnglishWords.dat");
 /* Main program */
 
 int main() {
 	
-	setupBoggle();
+	//setupBoggle();
 	playBoggle();
 
     return 0;
@@ -114,50 +118,50 @@ void giveInstructions() {
 }
 
 
-void setupBoggle(){
+void playBoggle(){
+	
+	Grid<char> board(BOARD_SIZE, BOARD_SIZE);
+    std::vector<std::string> cubesVec;
 	srand(std::time(NULL));
     GWindow gw(BOGGLE_WINDOW_WIDTH, BOGGLE_WINDOW_HEIGHT);
     initGBoggle(gw);
 	drawBoard(4,4);
-    shuffleCubes();
+    shuffleCubes(board,cubesVec);
     welcome();
     giveInstructions();
-}
 
-
-int playBoggle(){
-
-	return humansTurn();
+	 humansTurn(board);
 
 }
 
 
-int humansTurn(void){
+void humansTurn(Grid<char> board){
 	std::string userWord;
 	std::vector<std::string> humanWordList;
 	std::set<std::string> usedWords;
 	while(1){
 	std::cout << "Enter a Word: ";
 		if(!std::getline(std::cin,userWord)){
-		return -1; /* i/o error! */
-	}
+		break; /* i/o error! */
+		}
 	if(userWord.empty()){
 		std::cout << "Would you like to play again?";
 		if(!std::getline(std::cin,userWord))
-			return -1;// i/o error
+			break;// i/o error
 		if(userWord=="n")
-			return 0;
+			break;
 	}
+	boost::to_upper(userWord);
 	if(checkLength(userWord)&&checkWordUsed(userWord,usedWords)&&isEnglishWord(userWord)){
-		checkIfValidGuess();
+		if(checkIfValidGuess(userWord,board)){
+		}
 	}
 
 	}
 }
 
-void shuffleCubes(){
-	Grid<char> board(4, 4);
-    std::vector<std::string> cubesVec;
+void shuffleCubes(Grid<char> & board,std::vector<std::string> &cubesVec){
+
     unsigned arraySize =sizeof(STANDARD_CUBES)/sizeof(STANDARD_CUBES[0]);
     copy(&STANDARD_CUBES[0],&STANDARD_CUBES[arraySize],back_inserter(cubesVec));
 
@@ -209,9 +213,37 @@ bool isEnglishWord(std::string word){
 
 }
 
-void checkIfValidGuess(void){
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares){
 
-	//	recordWordForPlayer(std::string word, Player player);
-
+return false;
 }
+
+bool checkIfValidGuess(string playerWord,Grid<char>&board){
+
+	char startLetter = playerWord[0];
+
+	for(int row=0;row<BOARD_SIZE;row++){
+		for(int col=0;col<BOARD_SIZE;col++){
+			std::vector<GridPoint> path;
+			std::set<GridPoint> usedSquares;
+			int index =0;
+			if(boggleSolver(board,row,col,playerWord,index,path,usedSquares)){
+				return true;
+			}
+			/*
+			char c =board.get(row,col);//for debugging
+			if(startLetter==board.get(row,col)){
+				std::vector<GridPoint> wordPath;//stores the path of matched letters
+				std::vector<int> 
+				GridPoint point(row,col);
+				//int t = point.getY();
+				//std::string str = point.toString();
+				*/
+
+		}
+	}	
+	return false;
+}
+
+
 // [TODO: Fill in the rest of the code]

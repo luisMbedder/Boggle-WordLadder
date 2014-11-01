@@ -181,6 +181,10 @@
 				RelativePath="..\src\gboggle.cpp"
 				>
 			</File>
+			<File
+				RelativePath="..\src\GridPoint.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -189,6 +193,10 @@
 			>
 			<File
 				RelativePath="..\src\gboggle.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\GridPoint.h"
 				>
 			</File>
 		</Filter>
