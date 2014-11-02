@@ -31,4 +31,7 @@ bool operator==(GridPoint p1, GridPoint p2);
 
 bool operator!=(GridPoint p1,GridPoint p2);
 
+bool operator>(GridPoint p1, GridPoint p2);
+bool operator<(GridPoint p1, GridPoint p2);
+
 #endif

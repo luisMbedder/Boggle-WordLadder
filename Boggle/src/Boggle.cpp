@@ -45,6 +45,9 @@ const string BIG_BOGGLE_CUBES[25]  = {
     "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"
 };
 
+const int rdelta[] = {-1,-1,-1, 0, 0, 1, 1, 1}; 
+const int cdelta[] = {-1, 0, 1,-1, 1,-1, 0, 1};
+
 /* Function prototypes */
 
 void welcome();
@@ -205,28 +208,56 @@ bool checkWordUsed(std::string str,std::set<std::string>& usedWords){
 
 bool isEnglishWord(std::string word){		
 
-	if(!englishWords.contains(word)){
-		std::cout <<"That's not a word!"<<std::endl;
-		return false;
-	}
+//	if(!englishWords.contains(word)){
+//		std::cout <<"That's not a word!"<<std::endl;
+//		return false;
+//	}
 		return true;
 
 }
 
 bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares){
+	
+	if(index>playerWord.length()){//base case, return truw if word is found
+		return true;
+	}
+	if(!board.inBounds(row,col)){
+		return false;
+	}
 
-return false;
+
+//	for(;row<BOARD_SIZE;row++){
+		//for(;col<BOARD_SIZE;col++){
+	 std::set<GridPoint>::iterator it;
+			char c = board.get(row,col);
+			if(playerWord[index]==board.get(row,col)){
+				GridPoint pt(row,col);
+				it=usedSquares.find(pt);
+				if(usedSquares.find(pt)!=usedSquares.end())
+					return false;
+				path.push_back(pt);
+				usedSquares.insert(pt);//bug
+				index++;
+				for(int i=0;i<sizeof(rdelta)/sizeof(rdelta[0]);i++){
+					if(boggleSolver(board,row+rdelta[i],col+cdelta[i],playerWord,index,path,usedSquares))
+						return true;
+				}
+			}
+		//}
+	//}
+	return false;
 }
 
 bool checkIfValidGuess(string playerWord,Grid<char>&board){
 
 	char startLetter = playerWord[0];
+std::vector<GridPoint> path;
+			std::set<GridPoint> usedSquares;
+			int index =0;
 
 	for(int row=0;row<BOARD_SIZE;row++){
 		for(int col=0;col<BOARD_SIZE;col++){
-			std::vector<GridPoint> path;
-			std::set<GridPoint> usedSquares;
-			int index =0;
+			
 			if(boggleSolver(board,row,col,playerWord,index,path,usedSquares)){
 				return true;
 			}
