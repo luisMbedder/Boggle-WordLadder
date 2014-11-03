@@ -48,6 +48,15 @@ const string BIG_BOGGLE_CUBES[25]  = {
 const int rdelta[] = {-1,-1,-1, 0, 0, 1, 1, 1}; 
 const int cdelta[] = {-1, 0, 1,-1, 1,-1, 0, 1};
 
+struct pointT {
+int x, y;
+bool operator < (const pointT& other) const {
+if(x != other.x)
+return x < other.x;
+return y < other.y;
+}
+};
+
 /* Function prototypes */
 
 void welcome();
@@ -60,7 +69,7 @@ bool checkLength(std::string str);
 bool checkWordUsed(std::string,std::set<std::string>& usedWords);
 bool isEnglishWord(std::string word);
 bool checkIfValidGuess(string playerWord,Grid<char>&board);
-bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<pointT> &path,std::set<pointT> &usedSquares);
 
 	Lexicon englishWords("EnglishWords.dat");
 /* Main program */
@@ -216,9 +225,9 @@ bool isEnglishWord(std::string word){
 
 }
 
-bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares){
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<pointT> &path,std::set<pointT> &usedSquares){
 	
-	if(index>playerWord.length()){//base case, return truw if word is found
+	if(index>playerWord.length()-1){//base case, return truw if word is found
 		return true;
 	}
 	if(!board.inBounds(row,col)){
@@ -228,20 +237,24 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int i
 
 //	for(;row<BOARD_SIZE;row++){
 		//for(;col<BOARD_SIZE;col++){
-	 std::set<GridPoint>::iterator it;
+	 std::set<pointT>::iterator it;
 			char c = board.get(row,col);
 			if(playerWord[index]==board.get(row,col)){
-				GridPoint pt(row,col);
+				pointT pt;
+				pt.x=row;
+				pt.y=col;
 				it=usedSquares.find(pt);
 				if(usedSquares.find(pt)!=usedSquares.end())
 					return false;
 				path.push_back(pt);
 				usedSquares.insert(pt);//bug
 				index++;
-				for(int i=0;i<sizeof(rdelta)/sizeof(rdelta[0]);i++){
+				for(int i=0;i<sizeof(rdelta)/sizeof(rdelta[0]);i++){//recurively search the 8 spaces around the target letter
 					if(boggleSolver(board,row+rdelta[i],col+cdelta[i],playerWord,index,path,usedSquares))
 						return true;
 				}
+				path.pop_back();//gets here when we cant find another letter in the sourround 8 spaces
+				usedSquares.erase(pt);
 			}
 		//}
 	//}
@@ -251,8 +264,8 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int i
 bool checkIfValidGuess(string playerWord,Grid<char>&board){
 
 	char startLetter = playerWord[0];
-std::vector<GridPoint> path;
-			std::set<GridPoint> usedSquares;
+std::vector<pointT> path;
+			std::set<pointT> usedSquares;
 			int index =0;
 
 	for(int row=0;row<BOARD_SIZE;row++){
@@ -264,9 +277,9 @@ std::vector<GridPoint> path;
 			/*
 			char c =board.get(row,col);//for debugging
 			if(startLetter==board.get(row,col)){
-				std::vector<GridPoint> wordPath;//stores the path of matched letters
+				std::vector<pointT> wordPath;//stores the path of matched letters
 				std::vector<int> 
-				GridPoint point(row,col);
+				pointT point(row,col);
 				//int t = point.getY();
 				//std::string str = point.toString();
 				*/

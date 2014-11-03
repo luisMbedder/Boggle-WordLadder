@@ -32,14 +32,26 @@ bool operator==(GridPoint p1,GridPoint p2){
 bool operator!=(GridPoint p1, GridPoint p2){
 	return !(p1==p2);
 }
-
-bool operator<(GridPoint p1, GridPoint p2){//overload < operator to use set class
-	return ((p1.getX()<p2.getX())&&(p1.getY()<p2.getY()));
+/*
+bool operator<(const GridPoint& other)const{//overload < operator to use set class
+	if(x!=other.getX())
+		return x<other.getX();
+	return y<other.getY();
+	//return ((p2.getX()<p1.getX())&&(p2.getY()<p1.getY()));
 		
 }
-bool operator>(GridPoint p1, GridPoint p2){//overlaod > operator to use set class
-	return ((p1.getX()>p2.getX())&&(p1.getY()>p2.getY()));
+*/
+
+bool operator<(GridPoint p1, GridPoint p2){//overload < operator to use set class
+
+	return ((p2.getX()<p1.getX())&&(p2.getY()<p1.getY()));
+		
 }
+
+/*
+bool operator>(GridPoint p1, GridPoint p2){//overlaod > operator to use set class
+	return ((p2.getX()>p1.getX())&&(p2.getY()>p1.getY()));
+}*/
 
 std::ostream & operator<<(std::ostream & os, GridPoint pt){
 	return os << pt.toString();
