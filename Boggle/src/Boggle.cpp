@@ -1,11 +1,16 @@
-/*
- * File: Boggle.cpp
- * ----------------
- * Luis Marquez
- * Section: [TODO: enter section leader here]
- * This file is the main starter file for Assignment #4, Boggle.
- * [TODO: extend the documentation]
- */
+/********************************************************************
+* Project : Boggle
+*
+* Created by : LuisMbedder
+*
+* Description : Implements the game of Boggle adapted for a human player
+* against the computer. The heart of the program consists of two recursive
+* backtracking algorithms to find words on the board, one for the human player
+* and another for the computer. The computer proves to be nearly impossible
+* to beat since it has a lexicon/dictionary at its disposal. 
+*
+* Notes : None.
+********************************************************************/
 
 #include <iostream>
 #include "gboggle.h"
@@ -48,15 +53,6 @@ const string BIG_BOGGLE_CUBES[25]  = {
 const int rdelta[] = {-1,-1,-1, 0, 0, 1, 1, 1}; 
 const int cdelta[] = {-1, 0, 1,-1, 1,-1, 0, 1};
 
-struct pointT {
-int x, y;
-bool operator < (const pointT& other) const {
-if(x != other.x)
-return x < other.x;
-return y < other.y;
-}
-};
-
 /* Function prototypes */
 
 void welcome();
@@ -69,7 +65,7 @@ bool checkLength(std::string str);
 bool checkWordUsed(std::string,std::set<std::string>& usedWords);
 bool isEnglishWord(std::string word);
 bool checkIfValidGuess(string playerWord,Grid<char>&board);
-bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<pointT> &path,std::set<pointT> &usedSquares);
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
 
 	Lexicon englishWords("EnglishWords.dat");
 /* Main program */
@@ -217,15 +213,11 @@ bool checkWordUsed(std::string str,std::set<std::string>& usedWords){
 
 bool isEnglishWord(std::string word){		
 
-//	if(!englishWords.contains(word)){
-//		std::cout <<"That's not a word!"<<std::endl;
-//		return false;
-//	}
 		return true;
 
 }
 
-bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<pointT> &path,std::set<pointT> &usedSquares){
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int index,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares){
 	
 	if(index>playerWord.length()-1){//base case, return truw if word is found
 		return true;
@@ -234,13 +226,10 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int i
 		return false;
 	}
 
-
-//	for(;row<BOARD_SIZE;row++){
-		//for(;col<BOARD_SIZE;col++){
-	 std::set<pointT>::iterator it;
+	 std::set<GridPoint>::iterator it;
 			char c = board.get(row,col);
 			if(playerWord[index]==board.get(row,col)){
-				pointT pt;
+				GridPoint pt;
 				pt.x=row;
 				pt.y=col;
 				it=usedSquares.find(pt);
@@ -256,16 +245,14 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int i
 				path.pop_back();//gets here when we cant find another letter in the sourround 8 spaces
 				usedSquares.erase(pt);
 			}
-		//}
-	//}
 	return false;
 }
 
 bool checkIfValidGuess(string playerWord,Grid<char>&board){
 
 	char startLetter = playerWord[0];
-std::vector<pointT> path;
-			std::set<pointT> usedSquares;
+std::vector<GridPoint> path;
+			std::set<GridPoint> usedSquares;
 			int index =0;
 
 	for(int row=0;row<BOARD_SIZE;row++){
@@ -274,15 +261,6 @@ std::vector<pointT> path;
 			if(boggleSolver(board,row,col,playerWord,index,path,usedSquares)){
 				return true;
 			}
-			/*
-			char c =board.get(row,col);//for debugging
-			if(startLetter==board.get(row,col)){
-				std::vector<pointT> wordPath;//stores the path of matched letters
-				std::vector<int> 
-				pointT point(row,col);
-				//int t = point.getY();
-				//std::string str = point.toString();
-				*/
 
 		}
 	}	
@@ -290,4 +268,3 @@ std::vector<pointT> path;
 }
 
 
-// [TODO: Fill in the rest of the code]

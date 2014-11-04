@@ -1,6 +1,6 @@
 
-#ifndef _point_h
-#define _point_h
+#ifndef _GridPoint_h
+#define _GridPoint_h
 
 #include <iostream>
 #include <string>
