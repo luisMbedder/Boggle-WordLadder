@@ -69,6 +69,7 @@ bool checkLength(std::string str);
 bool checkWordUsed(std::string,std::set<std::string>& usedWords);
 bool isEnglishWord(std::string word);
 bool checkIfValidGuess(string playerWord,Grid<char>&board);
+void highlightWordPath(std::vector<GridPoint>& wordPath);
 bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
 
 Lexicon englishWords("EnglishWords.dat");
@@ -188,10 +189,12 @@ void humansTurn(Grid<char> board){
 	boost::to_upper(userWord);
 	if(checkLength(userWord)&&checkWordUsed(userWord,usedWords)&&isEnglishWord(userWord)){
 		if(checkIfValidGuess(userWord,board)){
+			//highlightCube()
 			humanWordList.push_back(userWord);
+			usedWords.insert(userWord);
 		}
 		else{
-			std::cout<<"Cannot make that word on board"<<std::endl:
+			std::cout<<"Cannot make that word on board"<<std::endl;
 		}
 	}
 
@@ -286,23 +289,63 @@ bool isEnglishWord(std::string playerWord){
 }
 
 
+/********************************************************************
+* Function name : highlightWordPath
+*
+* wordPath: path to trace on the board
+*
+* Created by : LuisMbedder
+*
+* Description : this function traces the path on the board by 
+*				momentarily highlighting the squares.
+********************************************************************/
+void highlightWordPath(std::vector<GridPoint>& wordPath){
+	std::vector<GridPoint>::iterator it;
+	for(it=wordPath.begin();it<wordPath.end();it++){
+		GridPoint p1 = *it;
+		int x = p1.getX();
+		int y = p1.getY();
+		highlightCube(x,y,true);
+
+	}
+	pause(200);
+	for(it=wordPath.begin();it<wordPath.end();it++){
+	GridPoint p1 = *it;
+	int x = p1.getX();
+	int y = p1.getY();
+	highlightCube(x,y,false);
+	}
+}
+
+
+/********************************************************************
+* Function name : checkIfValidGuess
+*
+* playerWord: word to find on board
+* board: reference to the boggle board implemented as a grid of characters
+*
+* Created by : LuisMbedder
+*
+* Description : this function calls the recursive boggleSolver function
+*				to check if the playerWord is on the board.
+********************************************************************/
 bool checkIfValidGuess(string playerWord,Grid<char>&board){
 
 	char startLetter = playerWord[0];
-std::vector<GridPoint> path;
-			std::set<GridPoint> usedSquares;
-			int index =0;
+    std::vector<GridPoint> path;
+	std::set<GridPoint> usedSquares;
+	int index =0;
 
 	for(int row=0;row<BOARD_SIZE;row++){
 		for(int col=0;col<BOARD_SIZE;col++){
-			
 			if(boggleSolver(board,row,col,playerWord,index,path,usedSquares)){
-				return true;
+				highlightWordPath(path);
+				recordWordForPlayer(playerWord, HUMAN);
+				return true;//word was found in board.
 			}
-
-		}
+	    }
 	}	
-	return false;
+	return false;//word is not in the board
 }
 
 
@@ -328,7 +371,7 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int w
 	if(wordIndex>playerWord.length()-1){//base case, return true if word is found
 		return true;
 	}
-	if(!board.inBounds(row,col)){//if board location is out-of-bounds go on to the next word
+	if(!board.inBounds(row,col)){//if board location is out-of-bounds go on to the next letter
 		return false;
 	}
 
@@ -348,10 +391,10 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int w
 				if(boggleSolver(board,row+rdelta[i],col+cdelta[i],playerWord,wordIndex,path,usedSquares))
 					return true;
 			}
-			    path.pop_back();//gets here when we cant find another letter in the surrounding 8 spaces
+			    path.pop_back();//gets here when it cant find another letter in the adjoining spaces, undo and try again. 
 				usedSquares.erase(pt);
-			}
-	return false;
+		}
+		return false;//this triggers backtracking from early decisions
 }
 
 
