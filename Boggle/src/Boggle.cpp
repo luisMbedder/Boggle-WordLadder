@@ -7,7 +7,7 @@
 * against the computer. The heart of the program consists of two recursive
 * backtracking algorithms to find words on the board, one for the human player
 * and another for the computer. The computer proves nearly impossible
-* to beat since it has a lexicon at its disposal. 
+* to beat since it has a lexicon at its disposal! 
 *
 * Notes : None.
 ********************************************************************/
@@ -63,15 +63,17 @@ void welcome();
 void giveInstructions();
 void shuffleCubes(Grid<char> & board,std::vector<std::string> &cubes);
 void setupBoggle(void);
+void highlightWordPath(std::vector<GridPoint>& wordPath);
 void playBoggle(void);
-void humansTurn(Grid<char> board);
+void humansTurn(Grid<char> board, std::set<std::string>& usedWords);
+void computerTurn(Grid<char> board,std::set<std::string>& usedWords);
 bool checkLength(std::string str);
 bool checkWordUsed(std::string,std::set<std::string>& usedWords);
 bool isEnglishWord(std::string word);
 bool checkIfValidGuess(string playerWord,Grid<char>&board);
-void highlightWordPath(std::vector<GridPoint>& wordPath);
 bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,unsigned int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
 
+//lexicon declaration to validate words
 Lexicon englishWords("EnglishWords.dat");
 
 /********************************************************************
@@ -147,6 +149,7 @@ void playBoggle(){
 	
 	Grid<char> board(BOARD_SIZE, BOARD_SIZE);
     std::vector<std::string> cubesVec;
+	std::set<std::string> usedWords;
 	srand((unsigned int)std::time(NULL));
     GWindow gw(BOGGLE_WINDOW_WIDTH, BOGGLE_WINDOW_HEIGHT);
     initGBoggle(gw);
@@ -155,7 +158,10 @@ void playBoggle(){
     welcome();
     giveInstructions();
 
-	humansTurn(board);
+	
+	humansTurn(board,usedWords);
+	computerTurn(board,usedWords);
+	
 
 }
 
@@ -170,27 +176,28 @@ void playBoggle(){
 *
 * Notes : None
 ********************************************************************/
-void humansTurn(Grid<char> board){
+void humansTurn(Grid<char> board,std::set<std::string>& usedWords){
 	std::string userWord;
 	std::vector<std::string> humanWordList;
-	std::set<std::string> usedWords;
+
 	while(1){
 	std::cout << "Enter a Word: ";
 		if(!std::getline(std::cin,userWord)){
 		break; /* i/o error! */
 		}
 	if(userWord.empty()){
-		std::cout << "Would you like to play again?";
-		if(!std::getline(std::cin,userWord))
-			break;// i/o error
-		if(userWord=="n")
-			break;
+	  //	std::cout << "Would you like to play again?";
+	//	if(!std::getline(std::cin,userWord))
+	//		break;// i/o error
+	//	if(userWord=="n")
+		//	break;
+		break;
 	}
 	boost::to_upper(userWord);
+
 	if(checkLength(userWord)&&checkWordUsed(userWord,usedWords)&&isEnglishWord(userWord)){
 		if(checkIfValidGuess(userWord,board)){
-			//highlightCube()
-			humanWordList.push_back(userWord);
+			humanWordList.push_back(userWord);//dont really need this
 			usedWords.insert(userWord);
 		}
 		else{
@@ -308,12 +315,14 @@ void highlightWordPath(std::vector<GridPoint>& wordPath){
 		highlightCube(x,y,true);
 
 	}
+
 	pause(200);
+
 	for(it=wordPath.begin();it<wordPath.end();it++){
-	GridPoint p1 = *it;
-	int x = p1.getX();
-	int y = p1.getY();
-	highlightCube(x,y,false);
+		GridPoint p1 = *it;
+		int x = p1.getX();
+		int y = p1.getY();
+		highlightCube(x,y,false);
 	}
 }
 
@@ -363,7 +372,17 @@ bool checkIfValidGuess(string playerWord,Grid<char>&board){
 * Created by : LuisMbedder
 *
 * Description : This function searches for the player word on the 
-*				board usign a recursive backtracking algorithm. 
+*				board usign a recursive backtracking algorithm. The program beings by finding the
+ first letter of the word in the board, then makes upto 8 recursive calls to find the next letter in the
+ spaces surrouding the letter, if it finds the letter it moves on to the next and so on until the entire word is found. 
+ If it cant find a valid letter after 8 calls, then it undo's the latest choice and searches 
+ 
+ the process contines until the whole word is found
+
+
+ When a letter letter is found
+*				on the board, 8 recursive calls are made to search for the next letter in the 
+*				surrounding 8 squares, if none are found it unmakes the choice and 
 *				
 ********************************************************************/
 bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,unsigned int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares){
@@ -398,5 +417,10 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,unsig
 }
 
 
+void computerTurn(Grid<char> board,std::set<std::string>& usedWords){
+
+
+
+}
 
 
