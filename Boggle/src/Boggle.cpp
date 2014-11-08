@@ -70,7 +70,7 @@ bool checkWordUsed(std::string,std::set<std::string>& usedWords);
 bool isEnglishWord(std::string word);
 bool checkIfValidGuess(string playerWord,Grid<char>&board);
 void highlightWordPath(std::vector<GridPoint>& wordPath);
-bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,unsigned int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
 
 Lexicon englishWords("EnglishWords.dat");
 
@@ -147,7 +147,7 @@ void playBoggle(){
 	
 	Grid<char> board(BOARD_SIZE, BOARD_SIZE);
     std::vector<std::string> cubesVec;
-	srand(std::time(NULL));
+	srand((unsigned int)std::time(NULL));
     GWindow gw(BOGGLE_WINDOW_WIDTH, BOGGLE_WINDOW_HEIGHT);
     initGBoggle(gw);
 	drawBoard(4,4);
@@ -366,7 +366,7 @@ bool checkIfValidGuess(string playerWord,Grid<char>&board){
 *				board usign a recursive backtracking algorithm. 
 *				
 ********************************************************************/
-bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares){
+bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,unsigned int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares){
 	
 	if(wordIndex>playerWord.length()-1){//base case, return true if word is found
 		return true;
