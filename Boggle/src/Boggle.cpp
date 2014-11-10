@@ -73,8 +73,8 @@ bool isEnglishWord(std::string word);
 bool checkIfValidGuess(string playerWord,Grid<char>&board);
 bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,
 				  unsigned int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares);
-bool computerBoggleSolver(Grid<char>& board,int row,int col,std::string word,
-				  unsigned int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares,std::set<std::string>& usedWords);
+bool computerBoggleSolver(Grid<char>& board,int row,int col,std::string compWord,
+						  std::set<GridPoint> &usedSquares,std::set<std::string>& usedWords);
 
 //lexicon declaration to validate words
 Lexicon englishWords("EnglishWords.dat");
@@ -425,26 +425,23 @@ bool boggleSolver(Grid<char>& board,int row,int col,std::string playerWord,unsig
 /********************************************************************
 * Function name : computerTurn
 *
-* playerWord	: word to find on board
 * board			: reference to the boggle board implemented as a grid of characters
+* usedWords     : reference to set of words already used so we dont count them again
 *
 * Created by : LuisMbedder
 *
-* Description : this function calls the recursive boggleSolver function
-*				to check if the playerWord is on the board.
+* Description : This function calls bogglesolver for each position on the board. 
 ********************************************************************/
 void computerTurn(Grid<char> board,std::set<std::string>& usedWords){
 
-	std::vector<GridPoint> path;
 	std::set<GridPoint> usedSquares;
 	std::string word ="";
 	int index =0;
 
 	for(int row=0;row<BOARD_SIZE;row++){
 		for(int col=0;col<BOARD_SIZE;col++){
-			if(computerBoggleSolver(board,row,col,word,index,path,usedSquares,usedWords)){
+			if(computerBoggleSolver(board,row,col,word,usedSquares,usedWords)){
 				std::string wordFound = word;
-				//highlightWordPath(path);
 				//recordWordForPlayer(word, COMPUTER);
 				//return true;//word was found in board.
 			}
@@ -452,11 +449,24 @@ void computerTurn(Grid<char> board,std::set<std::string>& usedWords){
 	}	
 }
 
+/********************************************************************
+* Function name : computerBoggleSolver
+*
+* board       : reference to the boggle board implemented as a grid of characters
+* row         : boggle board row
+* column      :	boggle board column
+* compWord	  : word to find on board
+* path        : reference to a vector that holds the path of matched letters
+* usedSquares : reference to a set that stores the usedsquares so they 
+*			    arent re-used in the same word 
+*
+* Created by : LuisMbedder
+*
+* Description : 
+********************************************************************/
+bool computerBoggleSolver(Grid<char>& board,int row,int col,std::string compWord,std::set<GridPoint> &usedSquares,std::set<std::string>& usedWords){
 
-bool computerBoggleSolver(Grid<char>& board,int row,int col,std::string words,unsigned int wordIndex,std::vector<GridPoint> &path,std::set<GridPoint> &usedSquares,std::set<std::string>& usedWords){
-
-		static std::string word="";
-		static std::string tempWord="";
+	//	static std::string word="";
 		if(!board.inBounds(row,col)){//if board location is out-of-bounds go on to the next square
 			return false;
 		}
@@ -468,32 +478,25 @@ bool computerBoggleSolver(Grid<char>& board,int row,int col,std::string words,un
 		char c = board[row][col];
 		
 
-		if(englishWords.containsPrefix(word)||word.size()<3){
+		if(englishWords.containsPrefix(compWord)||compWord.size()<3){
 			usedSquares.insert(pt);
-			word+=board[row][col];
-			path.push_back(pt);
-			if(englishWords.contains(word)&&word.size()>3
-				&&std::find(usedWords.begin(),usedWords.end(),word)==usedWords.end()){
-					usedWords.insert(word);
-				recordWordForPlayer(word, COMPUTER);
-
-			//	return true;
+			compWord+=board[row][col];
+			if(englishWords.contains(compWord)&&compWord.size()>3
+				&&std::find(usedWords.begin(),usedWords.end(),compWord)==usedWords.end()){
+					usedWords.insert(compWord);
+					recordWordForPlayer(compWord, COMPUTER);
 			}
-			
-			
-		
 		
 		for(int i=0;i<sizeof(rdelta)/sizeof(rdelta[0]);i++){
-			if((!englishWords.containsPrefix(word))&&word.size()>2)
+			if((!englishWords.containsPrefix(compWord))&&compWord.size()>2)
 				break;//dont bother searching for next letter if current word is not a valid prefix
-			if(computerBoggleSolver(board,row+rdelta[i],col+cdelta[i],word,wordIndex,path,usedSquares,usedWords))
+			if(computerBoggleSolver(board,row+rdelta[i],col+cdelta[i],compWord,usedSquares,usedWords))
 			{
 					return true;
 			}
 		}
-		path.pop_back();
 		usedSquares.erase(pt);
-		word.erase(word.size()-1,1);
+		compWord.erase(compWord.size()-1,1);
 		}
 		
 		return false;
