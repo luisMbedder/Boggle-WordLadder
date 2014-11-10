@@ -456,9 +456,9 @@ void computerTurn(Grid<char> board,std::set<std::string>& usedWords){
 * row         : boggle board row
 * column      :	boggle board column
 * compWord	  : word to find on board
-* path        : reference to a vector that holds the path of matched letters
 * usedSquares : reference to a set that stores the usedsquares so they 
 *			    arent re-used in the same word 
+* usedWords	  : reference to the words found by the human player so they arent counted again. 
 *
 * Created by : LuisMbedder
 *
@@ -466,7 +466,6 @@ void computerTurn(Grid<char> board,std::set<std::string>& usedWords){
 ********************************************************************/
 bool computerBoggleSolver(Grid<char>& board,int row,int col,std::string compWord,std::set<GridPoint> &usedSquares,std::set<std::string>& usedWords){
 
-	//	static std::string word="";
 		if(!board.inBounds(row,col)){//if board location is out-of-bounds go on to the next square
 			return false;
 		}
