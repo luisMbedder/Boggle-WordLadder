@@ -55,8 +55,7 @@ win32 {
 
 # include various source .cpp files and header .h files in the build process
 # (student's source code can be put into project root, or src/ subfolder)
-SOURCES += $$PWD/lib/StanfordCPPLib/*.cpp \
-    src/main.cpp
+SOURCES += $$PWD/lib/StanfordCPPLib/*.cpp
 SOURCES += $$PWD/lib/StanfordCPPLib/stacktrace/*.cpp
 exists($$PWD/src/test/*.cpp) {
     SOURCES += $$PWD/src/test/*.cpp
@@ -68,8 +67,7 @@ exists($$PWD/*.cpp) {
     SOURCES += $$PWD/*.cpp
 }
 
-HEADERS += $$PWD/lib/StanfordCPPLib/*.h \
-    src/boggle.h
+HEADERS += $$PWD/lib/StanfordCPPLib/*.h
 HEADERS += $$PWD/lib/StanfordCPPLib/private/*.h
 HEADERS += $$PWD/lib/StanfordCPPLib/stacktrace/*.h
 exists($$PWD/src/*.h) {
