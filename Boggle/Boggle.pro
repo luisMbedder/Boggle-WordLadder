@@ -235,7 +235,8 @@ exists($$PWD/*.txt) {
     copyResources.input += $$files($$PWD/*.txt)
 }
 
-OTHER_FILES += $$files(res/*)
+OTHER_FILES += $$files(res/*) \
+    res/background.jpg
 exists($$PWD/*.txt) {
     OTHER_FILES += $$files($$PWD/*.txt)
 }

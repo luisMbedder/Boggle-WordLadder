@@ -14,6 +14,7 @@
 ********************************************************************/
 
 #include "boggle.h"
+#include "console.h"
 
 
 /********************************************************************
@@ -21,12 +22,12 @@
 ********************************************************************/
 int main() {
 
-    Boggle BoggleGame;
+    Boggle *BoggleGame=new Boggle();
 
     while(true){
-    BoggleGame.playBoggle();
-    std::string result=BoggleGame.promptUser("Would you like to play again? ",1);
-        if(result=="n")
+    BoggleGame->playBoggle();
+    std::string result=BoggleGame->promptUser("Would you like to play again? ",1);
+        if(result=="N")
             break;
     }
 

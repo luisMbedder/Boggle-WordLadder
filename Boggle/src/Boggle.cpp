@@ -9,7 +9,7 @@
 * and another for the computer. The computer proves nearly impossible
 * to beat since it has a lexicon at its disposal!
 *
-* Notes : None.
+* Notes : See Boggle.h for documentation
 ********************************************************************/
 
 #include <iostream>
@@ -43,14 +43,15 @@ std::string Boggle::promptUser(std::string msg,unsigned int msgNumber){
     std::string result="";
     while(true){
     std::getline(std::cin,result);
-    if(result=="y"&&msgNumber==0){
+    std::transform(result.begin(), result.end(), result.begin(),toupper);
+    if(result=="Y"&&msgNumber==0){
         giveInstructions();
         break;
     }
-    else if(result=="y"&&msgNumber==1){
+    else if(result=="Y"&&msgNumber==1){
         break;//return result;
     }
-    else if(result=="n")
+    else if(result=="N")
         break;
     else
         std::cout<<"Please enter y or n. ";
@@ -61,11 +62,7 @@ std::string Boggle::promptUser(std::string msg,unsigned int msgNumber){
 
 void Boggle::welcome() {
     std::cout << "Welcome!  You're about to play a classic game ";
-    std::cout << "of Boggle.  The good news is that ";
-    std::cout << "you might improve your vocabulary a bit.  The ";
-    std::cout << "bad news is that you're probably going to lose ";
-    std::cout << "miserably to this little dictionary-toting ";
-    std::cout << "program.  If only YOU had a gig of RAM..." <<  std::endl <<  std::endl;
+    std::cout << "of Boggle." <<  std::endl <<  std::endl;
 }
 
 
@@ -93,12 +90,15 @@ void Boggle::giveInstructions() {
 
 
 void Boggle::playBoggle(){
-    std::string result;
+
     Grid<char> board(BOARD_SIZE, BOARD_SIZE);
     std::vector<std::string> cubesVec;
     std::set<std::string> usedWords;
     srand((unsigned int)std::time(NULL));
     static GWindow gw(BOGGLE_WINDOW_WIDTH, BOGGLE_WINDOW_HEIGHT);
+   // gw.drawImage("background.jpg", pt);
+      //  GImage gimage = new GImage(image);
+
     initGBoggle(gw);
     drawBoard(4,4);
     shuffleCubes(board,cubesVec);

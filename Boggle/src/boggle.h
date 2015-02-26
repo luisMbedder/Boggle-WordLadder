@@ -22,9 +22,9 @@
 ********************************************************************/
 
 const int BOGGLE_WINDOW_WIDTH = 650;
-const int BOGGLE_WINDOW_HEIGHT = 350;
+const int BOGGLE_WINDOW_HEIGHT = 450;
 const int MINIMUM_WORD_LENGTH = 4;
-const int BOARD_SIZE =4;
+const int BOARD_SIZE = 4;
 
 //Dice from the original Boggle game
 const std::string STANDARD_CUBES[16]  = {

@@ -23,6 +23,7 @@
 #include "gtypes.h"
 #include "gwindow.h"
 #include "strlib.h"
+
 using namespace std;
 
 /*
@@ -45,7 +46,7 @@ const string CUBE_FONT = "Helvetica";  /* Font for letters on cube face      */
 const double FONT_PERCENTAGE = 0.6;    /* percentage of cube used for letter */
 const string SCORE_FONT = "Helvetica"; /* Font for scoreboard names & scores */
 const int SCORE_FONT_SIZE = 18;
-const int WORD_FONT_SIZE = 10;
+const int WORD_FONT_SIZE = 16;
 
 #ifdef _MSC_VER
 const string WORD_FONT = "Arial";
@@ -55,8 +56,8 @@ const string WORD_FONT = "Geneva";
 
 const string BOARD_COLOR = "#FFEE66";
 const string DIE_COLOR = "#E6E6E6";
-const string LETTER_COLOR = "#023BD6";
-const string WORD_COLOR = "#02805D";
+const string LETTER_COLOR = "#023BD6F";
+const string WORD_COLOR = "#FFFFFF";
 const string LABEL_COLOR = "#028040";
 
 /*
@@ -131,6 +132,8 @@ void drawBoard(int numRows, int numCols) {
    }
    gwp->clear();
    gwp->setWindowTitle("Welcome to Boggle!");
+   GImage* background = new GImage("background.jpg");
+   gwp->draw(background);
    calculateGeometry(numRows, numCols);
 
    // Draws a filled rect underneath cubes in the oh-so-familiar yellow color
@@ -219,6 +222,7 @@ static void drawPlayerLabel(Player player, string name) {
                  gState.scoreBox[player].y);
    GLabel label(name);
    label.setFont(SCORE_FONT + "-" + integerToString(SCORE_FONT_SIZE));
+   label.setColor(WORD_COLOR);
    label.setLocation(gState.scoreBox[player].x,
                      gState.scoreBox[player].y + LABEL_DY);
    gwp->draw(label);
