@@ -23,6 +23,7 @@
 #include "gtypes.h"
 #include "gwindow.h"
 #include "strlib.h"
+using namespace std;
 
 /*
  * Constants
