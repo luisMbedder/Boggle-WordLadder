@@ -24,8 +24,7 @@
 #include <algorithm>
 #include <ctime>
 #include <set>
-//#include <boost/algorithm/string.hpp>
-using namespace std;
+
 /********************************************************************
 * Constants
 ********************************************************************/
@@ -126,12 +125,12 @@ std::string promptUser(std::string msg,unsigned int msgNumber){
 ********************************************************************/
 
 void welcome() {
-    cout << "Welcome!  You're about to play a classic game ";
-    cout << "of Boggle.  The good news is that ";
-    cout << "you might improve your vocabulary a bit.  The ";
-    cout << "bad news is that you're probably going to lose ";
-    cout << "miserably to this little dictionary-toting ";
-    cout << "program.  If only YOU had a gig of RAM..." << endl << endl;
+    std::cout << "Welcome!  You're about to play a classic game ";
+    std::cout << "of Boggle.  The good news is that ";
+    std::cout << "you might improve your vocabulary a bit.  The ";
+    std::cout << "bad news is that you're probably going to lose ";
+    std::cout << "miserably to this little dictionary-toting ";
+    std::cout << "program.  If only YOU had a gig of RAM..." <<  std::endl <<  std::endl;
 }
 
 /********************************************************************
@@ -141,23 +140,23 @@ void welcome() {
 ********************************************************************/
 
 void giveInstructions() {
-    cout << endl;
-    cout << "The boggle board is a grid onto which I ";
-    cout << "I will randomly distribute cubes. These ";
-    cout << "6-sided cubes have letters rather than ";
-    cout << "numbers on the faces, creating a grid of ";
-    cout << "letters on which you try to form words. ";
-    cout << "You go first, entering all the words you can ";
-    cout << "find that are formed by tracing adjoining ";
-    cout << "letters. Two letters adjoin if they are next ";
-    cout << "to each other horizontally, vertically, or ";
-    cout << "diagonally. A letter can only be used once ";
-    cout << "in each word. Words must be at least four ";
-    cout << "letters long and can be counted only once. ";
-    cout << "You score points based on word length: a ";
-    cout << "4-letter word is worth 1 point, 5-letters ";
-    cout << "earn 2 points, and so on." << endl << endl;
-    cout << "Hit return when you're ready...";
+    std::cout << std::endl;
+    std::cout << "The boggle board is a grid onto which I ";
+    std::cout << "I will randomly distribute cubes. These ";
+    std::cout << "6-sided cubes have letters rather than ";
+    std::cout << "numbers on the faces, creating a grid of ";
+    std::cout << "letters on which you try to form words. ";
+    std::cout << "You go first, entering all the words you can ";
+    std::cout << "find that are formed by tracing adjoining ";
+    std::cout << "letters. Two letters adjoin if they are next ";
+    std::cout << "to each other horizontally, vertically, or ";
+    std::cout << "diagonally. A letter can only be used once ";
+    std::cout << "in each word. Words must be at least four ";
+    std::cout << "letters long and can be counted only once. ";
+    std::cout << "You score points based on word length: a ";
+    std::cout << "4-letter word is worth 1 point, 5-letters ";
+    std::cout << "earn 2 points, and so on." <<  std::endl <<  std::endl;
+    std::cout << "Hit return when you're ready...";
     getLine();
 }
 
@@ -211,7 +210,8 @@ void humansTurn(Grid<char> board,std::set<std::string>& usedWords){
     if(userWord.empty()){
         break;
     }
-   // boost::to_upper(userWord);
+
+   std::transform(userWord.begin(), userWord.end(), userWord.begin(),toupper);
 
     if(checkLength(userWord)&&checkWordUsed(userWord,usedWords)&&isEnglishWord(userWord)){
         if(checkIfValidGuess(userWord,board)){
@@ -354,7 +354,7 @@ void highlightWordPath(std::vector<GridPoint>& wordPath){
 * Description : this function calls the recursive boggleSolver function
 *				to check if the playerWord is on the board.
 ********************************************************************/
-bool checkIfValidGuess(string playerWord,Grid<char>&board){
+ bool checkIfValidGuess(std::string playerWord,Grid<char>&board){
 
     std::vector<GridPoint> path;
     std::set<GridPoint> usedSquares;
